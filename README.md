@@ -19,7 +19,7 @@ Some tools that can help you reach discord.js docs and guide fast
 <ul style="list-style-type: none; ">
 <li>
 <h4>Run the command:</h4>
-<img src="command=searchDocs.png" />
+<img src="examples/command=searchDocs.png" />
 </li>
 
 ***

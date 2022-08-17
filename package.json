@@ -2,7 +2,7 @@
   "name": "discord-js-docs",
   "displayName": "Discord.js docs",
   "description": "Some tools that can help you reach discord.js docs and guide fast",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "gtjman",
   "icon": "marketPlaceIcon.png",
   "repository": {
