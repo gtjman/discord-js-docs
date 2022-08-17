@@ -1,0 +1,90 @@
+{
+  "name": "discord-js-docs",
+  "displayName": "Discord.js docs",
+  "description": "Some tools that can help you reach discord.js docs and guide fast",
+  "version": "0.0.1",
+  "publisher": "gtjman",
+  "icon": "marketPlaceIcon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gtjman/discord-js-docs"
+  },
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*",
+    "onCommand:discord-js-docs.searchDocs",
+    "onCommand:discord-js-docs.openDocs",
+    "onCommand:discord-js-docs.openGuide",
+    "onView:discord-js-docs.DiscordjsWebView"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "djs",
+          "title": "Discord.js",
+          "icon": "icon.png"
+        }
+      ]
+    },
+    "views": {
+      "djs": [
+        {
+          "type": "webview",
+          "id": "discord-js-docs.DiscordjsWebView",
+          "name": "Discord.js"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "discord-js-docs.searchDocs",
+        "category": "Discord.js Documentation",
+        "shortTitle": "DJS Docs",
+        "title": "Search Docs"
+      },
+      {
+        "command": "discord-js-docs.openDocs",
+        "category": "Discord.js Documentation",
+        "shortTitle": "DJS Docs",
+        "title": "Open Docs"
+      },
+      {
+        "command": "discord-js-docs.openGuide",
+        "category": "Discord.js Guide",
+        "shortTitle": "DJS Guide",
+        "title": "Open Guide"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.70.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "axios": "^0.27.2"
+  }
+}
