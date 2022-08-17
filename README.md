@@ -63,8 +63,3 @@ Some tools that can help you reach discord.js docs and guide fast
 
 ## Another way to search:
 <img src="./examples/bar.png" />
-<style>
-li{
-  margin: 10px;
-}
-</style>
