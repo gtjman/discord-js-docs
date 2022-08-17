@@ -19,42 +19,42 @@ Some tools that can help you reach discord.js docs and guide fast
 <ul style="list-style-type: none; ">
 <li>
 <h4>Run the command:</h4>
-<img src="./examples/command=searchDocs.png" />
+<img src="examples/bar.png" />
 </li>
 
 ***
 
 <li>
 <h4>Choose a package:</h4>
-<img src="./examples/package.png" />
+<img src="examples/package.png" />
 </li>
 
 ***
 
 <li>
 <h4>Choose package version:</h4>
-<img src="./examples/packageVersion.png" />
+<img src="examples/packageVersion.png" />
 </li>
 
 ***
 
 <li>
 <h4>Choose section:</h4>
-<img src="./examples/section.png" />
+<img src="examples/section.png" />
 </li>
 
 ***
 
 <li>
 <h4>Choose the thing you want to know about:</h4>
-<img src="./examples/objects.png" />
+<img src="examples/objects.png" />
 </li>
 
 ***
 
 <li>
 <h4>Congrats 🎉:</h4>
-<img src="./examples/docs.png" />
+<img src="examples/docs.png" />
 </li>
 
 </ul>
@@ -62,4 +62,4 @@ Some tools that can help you reach discord.js docs and guide fast
 ***
 
 ## Another way to search:
-<img src="./examples/bar.png" />
+<img src="examples/bar.png" />
