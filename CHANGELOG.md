@@ -1,6 +1,6 @@
 # Change Log
 
-## Improved the extention and fixed some bugs
+## Improved the extension and fixed some bugs
 
 1. Added discord.js banner in the activity bar webview to improve appearance
 2. Fixed some bugs
