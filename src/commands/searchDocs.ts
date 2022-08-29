@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as vscode from 'vscode';
-import db from '../utils/dbArray';
+import { wait } from '../utils/wait';
 
 export default vscode.commands.registerCommand('discord-js-docs.searchDocs', async () => {
     const docs = await vscode.window.showQuickPick([
@@ -35,85 +35,103 @@ export default vscode.commands.registerCommand('discord-js-docs.searchDocs', asy
     ], {
         matchOnDetail: true
     });
-    let versions: string[] = [];
-    switch (docs?.label) {
-        case "discord.js":
-            versions = ["main", "stable", "v11", "v12", "v13", "14.2.0", "14.1.2", "14.0.3", "13.10.2", "13.9.2", "13.8.1", "13.7.0", "13.6.0", "13.5.1", "13.4.0", "13.3.1", "13.2.0", "13.1.0", "13.0.1", "12.5.3", "12.4.1", "12.3.1", "12.2.0", "12.1.1", "12.0.2", "11.6.4", "11.5.1", "11.4.2", "11.3.2", "11.2.0", "11.1.0", "11.0.0", "10.0.1", "9.3.1", "9.2.0", "9.1.1", "9.0.2"];
-            break;
-        case "builders":
-            versions = ["main", "1.1.0", "1.0.0", "0.16.0", "0.15.0", "0.14.0", "0.13.0", "0.12.0", "0.11.0"];
-            break;
-        case "collection":
-            versions = ["main", "1.0.1", "1.0.0", "0.8.0", "0.7.0", "0.6.0", "0.5.0", "0.4.0"];
-            break;
-        case "proxy":
-            versions = ["1.0.0"];
-            break;
-        case "rest":
-            versions = ["main", "1.0.1", "1.0.0", "0.6.0", "0.5.0", "0.4.0", "0.3.0"];
-            break;
-        case "voice":
-            versions = ["main", "0.11.0", "0.10.0", "0.9.0", "0.8.0", "0.7.5"];
-            break;
-        case "ws":
-            versions = ["0.1.0", "0.2.0"];
-            break;
-    };
-    const version = await vscode.window.showQuickPick(versions?.map((v) => {
-        return {
-            label: v
-        };
-    }));
-    axios.get(`https://docs.discordjs.dev/docs/${docs?.label}/${version?.label}.json`).then(async res => {
-        let data = res.data;
-        let sectionPick = await vscode.window.showQuickPick([
-            {
-                label: "Functions"
-            },
-            {
-                label: "Classes"
-            },
-            {
-                label: "Typedefs"
-            },
-        ], {
-            matchOnDetail: true
-        });
-        let section: any;
-        switch (sectionPick?.label) {
-            case "Functions":
-                section = data["functions"];
-                break;
-            case "Classes":
-                section = data["classes"];
-                break;
-            case "Typedefs":
-                section = data["typedefs"];
-                break;
+    let pkgs: { name: string; versions: string[] }[] = [
+        {
+            name: "discord.js",
+            versions: []
+        },
+        {
+            name: "builders",
+            versions: []
+        },
+        {
+            name: "collection",
+            versions: []
+        },
+        {
+            name: "proxy",
+            versions: []
+        },
+        {
+            name: "rest",
+            versions: []
+        },
+        {
+            name: "voice",
+            versions: []
+        },
+        {
+            name: "ws",
+            versions: []
         }
-        let nameNoS: string = "";
-        if (sectionPick?.label === "Functions") { nameNoS = "function"; }
-        if (sectionPick?.label === "Classes") { nameNoS = "class"; }
-        if (sectionPick?.label === "Typedefs") { nameNoS = "typedef"; }
-        let prop: any = await vscode.window.showQuickPick(section.map((s: { name: string; description: string; }) => {
-            return {
-                label: `${s.name}`,
-                detail: `${s.description}` || "",
-                link: `https://discord.js.org/#/docs/${docs?.label}/${version?.label}/${nameNoS}/${s.name}`,
-                docName: `${s.name}`
-            };
-        }), { matchOnDetail: true, matchOnDescription: true });
-        if (prop?.link && prop?.link !== null && prop?.link !== undefined) {
-            const panel = vscode.window.createWebviewPanel(
-                'docs',
-                `${prop?.detail}`,
-                vscode.ViewColumn.One,
+    ];
+
+    axios.get("https://api.github.com/repos/discordjs/discord.js/git/refs/tags").then(async res => {
+        res.data.forEach((tag: any) => {
+            let version = tag.ref.match(/(\d|\.+)/g).join("");
+            let name = "";
+            if (tag.ref === `refs/tags/${version}`) {
+                name = "discord.js";
+            } else {
+                name = tag.ref.split(`@${version}`)[0].split("/")[3];
+            }
+            let found = pkgs.find(pkg => pkg.name === name) as { name: string; versions: string[] };
+            pkgs[pkgs.indexOf(found)]?.versions.push(version);
+        });
+        let versions = pkgs.find(pkg => {
+            let name = docs?.label as string;
+            return pkg.name === name;
+        })?.versions as string[];
+        const version = await vscode.window.showQuickPick([{ label: "main" }, { label: "stable" }, ...versions?.map(v => ({ label: v })).reverse()]);
+        axios.get(`https://docs.discordjs.dev/docs/${docs?.label}/${version?.label}.json`).then(async res => {
+            let data = res.data;
+            let sectionPick = await vscode.window.showQuickPick([
                 {
-                    enableScripts: true
-                }
-            );
-            db.push("lasSearches", prop);
-            panel.webview.html = `<!DOCTYPE html>
+                    label: "Functions"
+                },
+                {
+                    label: "Classes"
+                },
+                {
+                    label: "Typedefs"
+                },
+            ], {
+                matchOnDetail: true
+            });
+            let section: any;
+            switch (sectionPick?.label) {
+                case "Functions":
+                    section = data["functions"];
+                    break;
+                case "Classes":
+                    section = data["classes"];
+                    break;
+                case "Typedefs":
+                    section = data["typedefs"];
+                    break;
+            }
+            let nameNoS: string = "";
+            if (sectionPick?.label === "Functions") { nameNoS = "function"; }
+            if (sectionPick?.label === "Classes") { nameNoS = "class"; }
+            if (sectionPick?.label === "Typedefs") { nameNoS = "typedef"; }
+            let prop: any = await vscode.window.showQuickPick(section.map((s: { name: string; description: string; }) => {
+                return {
+                    label: `${s.name}`,
+                    detail: `${s.description}` || "",
+                    link: `https://discord.js.org/#/docs/${docs?.label}/${version?.label}/${nameNoS}/${s.name}`,
+                    docName: `${s.name}`
+                };
+            }), { matchOnDetail: true, matchOnDescription: true });
+            if (prop?.link && prop?.link !== null && prop?.link !== undefined) {
+                const panel = vscode.window.createWebviewPanel(
+                    'docs',
+                    `${prop?.label}`,
+                    vscode.ViewColumn.One,
+                    {
+                        enableScripts: true
+                    }
+                );
+                panel.webview.html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -140,7 +158,10 @@ iframe {
 }
 </style>
 </html>`;
-        }
+            }
+        }).catch(error => {
+            return vscode.window.showErrorMessage("Failed to fetch data");
+        });
     }).catch(error => {
         return vscode.window.showErrorMessage("Failed to fetch data");
     });

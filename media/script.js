@@ -1,6 +1,8 @@
 let searchDocsButton = document.getElementById("searchDocs");
 let openDocsButton = document.getElementById("openDocs");
 let openGuideButton = document.getElementById("openGuide");
+let searches = document.getElementById("searches");
+
 (function () {
     const vscode = acquireVsCodeApi();
     searchDocsButton.onclick = () => {
